@@ -17,7 +17,3 @@ runtime/hash.o
 runtime/utf8.o
 runtime/init_module.o
 runtime/object.o
-runtime/stack_overflow.o
-runtime/load_dynlib.o 
-runtime/stackinfo.o 
-runtime/platform.o 

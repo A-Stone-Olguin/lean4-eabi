@@ -80,7 +80,7 @@ size_t get_peak_rss() {
 #if defined(__APPLE__)
     return static_cast<size_t>(rusage.ru_maxrss);
 #else
-    return static_cast<size_t>(rusage.ru_maxrss) * static_cast<size_t>(1024);
+    return static_cast<size_t>(1) * static_cast<size_t>(1024);
 #endif
 }
 

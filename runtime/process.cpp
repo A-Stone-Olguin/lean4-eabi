@@ -299,7 +299,8 @@ static optional<pipe> setup_stdio(stdio cfg) {
         if (::fcntl(fds[0], F_SETFD, FD_CLOEXEC)) { throw errno; }
         if (::fcntl(fds[1], F_SETFD, FD_CLOEXEC)) { throw errno; }
 #else
-        if (::pipe2(fds, O_CLOEXEC) == -1) { throw errno; }
+        if ( false ) //::pipe2(fds, O_CLOEXEC) == -1) 
+        { throw errno; }
 #endif
         return optional<pipe>(pipe { fds[0], fds[1] });
     case stdio::NUL:

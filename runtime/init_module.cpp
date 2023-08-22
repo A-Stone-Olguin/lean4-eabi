@@ -22,13 +22,13 @@ extern "C" LEAN_EXPORT void lean_initialize_runtime_module() {
     initialize_thread();
     initialize_mutex();
     initialize_process();
-    initialize_stack_overflow();
+    // initialize_stack_overflow();
 }
 void initialize_runtime_module() {
     lean_initialize_runtime_module();
 }
 void finalize_runtime_module() {
-    finalize_stack_overflow();
+    // finalize_stack_overflow();
     finalize_process();
     finalize_mutex();
     finalize_thread();

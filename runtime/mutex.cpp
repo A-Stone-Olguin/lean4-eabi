@@ -50,12 +50,12 @@ extern "C" LEAN_EXPORT obj_res lean_io_condvar_new(obj_arg) {
     return io_result_mk_ok(lean_alloc_external(g_condvar_external_class, new condition_variable));
 }
 
-extern "C" LEAN_EXPORT obj_res lean_io_condvar_wait(b_obj_arg condvar, b_obj_arg mtx, obj_arg) {
-    unique_lock<mutex> lock(*basemutex_get(mtx), std::adopt_lock_t());
-    condvar_get(condvar)->wait(lock);
-    lock.release();
-    return io_result_mk_ok(box(0));
-}
+// extern "C" LEAN_EXPORT obj_res lean_io_condvar_wait(b_obj_arg condvar, b_obj_arg mtx, obj_arg) {
+//     unique_lock<mutex> lock(*basemutex_get(mtx), std::adopt_lock_t());
+//     condvar_get(condvar)->wait(lock);
+//     lock.release();
+//     return io_result_mk_ok(box(0));
+// }
 
 extern "C" LEAN_EXPORT obj_res lean_io_condvar_notify_one(b_obj_arg condvar, obj_arg) {
     condvar_get(condvar)->notify_one();

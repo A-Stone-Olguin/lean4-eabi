@@ -17,7 +17,3 @@ runtime/hash.cpp
 runtime/utf8.cpp
 runtime/init_module.cpp
 runtime/object.cpp
-runtime/stack_overflow.cpp
-runtime/load_dynlib.cpp 
-runtime/stackinfo.cpp 
-runtime/platform.cpp 

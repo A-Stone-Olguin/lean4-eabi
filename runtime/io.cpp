@@ -19,13 +19,13 @@ Authors: Leonardo de Moura, Sebastian Ullrich
 #endif
 // Linux include files
 #include <unistd.h> // NOLINT
-#include <sys/mman.h>
-#include <sys/random.h>
+// #include <sys/mman.h>
+// #include <sys/random.h>
 #endif
 #ifndef LEAN_WINDOWS
 #include <csignal>
 #endif
-#include <dirent.h>
+// #include <dirent.h>
 #include <fcntl.h>
 #include <iostream>
 #include <chrono>
@@ -47,7 +47,7 @@ Authors: Leonardo de Moura, Sebastian Ullrich
 #ifdef _MSC_VER
 #define S_ISDIR(mode) ((mode & _S_IFDIR) != 0)
 #else
-#include <dirent.h>
+// #include <dirent.h>
 #endif
 
 namespace lean {
@@ -526,36 +526,36 @@ extern "C" LEAN_EXPORT obj_res lean_io_getenv(b_obj_arg env_var, obj_arg) {
 #endif
 }
 
-extern "C" LEAN_EXPORT obj_res lean_io_realpath(obj_arg fname, obj_arg) {
-#if defined(LEAN_WINDOWS)
-    constexpr unsigned BufferSize = 8192;
-    char buffer[BufferSize];
-    DWORD retval = GetFullPathName(string_cstr(fname), BufferSize, buffer, nullptr);
-    if (retval == 0 || retval > BufferSize) {
-        return io_result_mk_ok(fname);
-    } else {
-        dec_ref(fname);
-        // Hack for making sure disk is lower case
-        // TODO(Leo): more robust solution
-        if (strlen(buffer) >= 2 && buffer[1] == ':') {
-            buffer[0] = tolower(buffer[0]);
-        }
-        return io_result_mk_ok(mk_string(buffer));
-    }
-#else
-    char buffer[PATH_MAX];
-    char * tmp = realpath(string_cstr(fname), buffer);
-    if (tmp) {
-        obj_res s = mk_string(tmp);
-        dec_ref(fname);
-        return io_result_mk_ok(s);
-    } else {
-        obj_res res = mk_file_not_found_error(fname);
-        dec_ref(fname);
-        return res;
-    }
-#endif
-}
+// extern "C" LEAN_EXPORT obj_res lean_io_realpath(obj_arg fname, obj_arg) {
+// #if defined(LEAN_WINDOWS)
+//     constexpr unsigned BufferSize = 8192;
+//     char buffer[BufferSize];
+//     DWORD retval = GetFullPathName(string_cstr(fname), BufferSize, buffer, nullptr);
+//     if (retval == 0 || retval > BufferSize) {
+//         return io_result_mk_ok(fname);
+//     } else {
+//         dec_ref(fname);
+//         // Hack for making sure disk is lower case
+//         // TODO(Leo): more robust solution
+//         if (strlen(buffer) >= 2 && buffer[1] == ':') {
+//             buffer[0] = tolower(buffer[0]);
+//         }
+//         return io_result_mk_ok(mk_string(buffer));
+//     }
+// #else
+//     char buffer[PATH_MAX];
+//     char * tmp = realpath(string_cstr(fname), buffer);
+//     if (tmp) {
+//         obj_res s = mk_string(tmp);
+//         dec_ref(fname);
+//         return io_result_mk_ok(s);
+//     } else {
+//         obj_res res = mk_file_not_found_error(fname);
+//         dec_ref(fname);
+//         return res;
+//     }
+// #endif
+// }
 
 /*
 structure DirEntry where
@@ -564,25 +564,25 @@ structure DirEntry where
 
 constant readDir : @& FilePath → IO (Array DirEntry)
 */
-extern "C" LEAN_EXPORT obj_res lean_io_read_dir(b_obj_arg dirname, obj_arg) {
-    object * arr = array_mk_empty();
-    DIR * dp = opendir(string_cstr(dirname));
-    if (!dp) {
-        return io_result_mk_error(decode_io_error(errno, dirname));
-    }
-    while (dirent * entry = readdir(dp)) {
-        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) {
-            continue;
-        }
-        object * lentry = alloc_cnstr(0, 2, 0);
-        lean_inc(dirname);
-        cnstr_set(lentry, 0, dirname);
-        cnstr_set(lentry, 1, lean_mk_string(entry->d_name));
-        arr = lean_array_push(arr, lentry);
-    }
-    lean_always_assert(closedir(dp) == 0);
-    return io_result_mk_ok(arr);
-}
+// extern "C" LEAN_EXPORT obj_res lean_io_read_dir(b_obj_arg dirname, obj_arg) {
+//     object * arr = array_mk_empty();
+//     DIR * dp = opendir(string_cstr(dirname));
+//     if (!dp) {
+//         return io_result_mk_error(decode_io_error(errno, dirname));
+//     }
+//     while (dirent * entry = readdir(dp)) {
+//         if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) {
+//             continue;
+//         }
+//         object * lentry = alloc_cnstr(0, 2, 0);
+//         lean_inc(dirname);
+//         cnstr_set(lentry, 0, dirname);
+//         cnstr_set(lentry, 1, lean_mk_string(entry->d_name));
+//         arr = lean_array_push(arr, lentry);
+//     }
+//     lean_always_assert(closedir(dp) == 0);
+//     return io_result_mk_ok(arr);
+// }
 
 /*
 inductive FileType where
@@ -678,71 +678,71 @@ extern "C" LEAN_EXPORT obj_res lean_io_remove_file(b_obj_arg fname, obj_arg) {
     }
 }
 
-extern "C" LEAN_EXPORT obj_res lean_io_app_path(obj_arg) {
-#if defined(LEAN_WINDOWS)
-    HMODULE hModule = GetModuleHandleW(NULL);
-    WCHAR path[MAX_PATH];
-    GetModuleFileNameW(hModule, path, MAX_PATH);
-    std::wstring pathwstr(path);
-    std::string pathstr(pathwstr.begin(), pathwstr.end());
-    // Hack for making sure disk is lower case
-    // TODO(Leo): more robust solution
-    if (pathstr.size() >= 2 && pathstr[1] == ':') {
-        pathstr[0] = tolower(pathstr[0]);
-    }
-    return io_result_mk_ok(mk_string(pathstr));
-#elif defined(__APPLE__)
-    char buf1[PATH_MAX];
-    char buf2[PATH_MAX];
-    uint32_t bufsize = PATH_MAX;
-    if (_NSGetExecutablePath(buf1, &bufsize) != 0)
-        return io_result_mk_error("failed to locate application");
-    if (!realpath(buf1, buf2))
-        return io_result_mk_error("failed to resolve symbolic links when locating application");
-    return io_result_mk_ok(mk_string(buf2));
-#elif defined(LEAN_EMSCRIPTEN)
-    // See https://emscripten.org/docs/api_reference/emscripten.h.html#c.EM_ASM_INT
-    char* appPath = reinterpret_cast<char*>(EM_ASM_INT({
-        if ((typeof process === "undefined") || (process.release.name !== "node")) {
-            return 0;
-        }
+// extern "C" LEAN_EXPORT obj_res lean_io_app_path(obj_arg) {
+// #if defined(LEAN_WINDOWS)
+//     HMODULE hModule = GetModuleHandleW(NULL);
+//     WCHAR path[MAX_PATH];
+//     GetModuleFileNameW(hModule, path, MAX_PATH);
+//     std::wstring pathwstr(path);
+//     std::string pathstr(pathwstr.begin(), pathwstr.end());
+//     // Hack for making sure disk is lower case
+//     // TODO(Leo): more robust solution
+//     if (pathstr.size() >= 2 && pathstr[1] == ':') {
+//         pathstr[0] = tolower(pathstr[0]);
+//     }
+//     return io_result_mk_ok(mk_string(pathstr));
+// #elif defined(__APPLE__)
+//     char buf1[PATH_MAX];
+//     char buf2[PATH_MAX];
+//     uint32_t bufsize = PATH_MAX;
+//     if (_NSGetExecutablePath(buf1, &bufsize) != 0)
+//         return io_result_mk_error("failed to locate application");
+//     if (!realpath(buf1, buf2))
+//         return io_result_mk_error("failed to resolve symbolic links when locating application");
+//     return io_result_mk_ok(mk_string(buf2));
+// #elif defined(LEAN_EMSCRIPTEN)
+//     // See https://emscripten.org/docs/api_reference/emscripten.h.html#c.EM_ASM_INT
+//     char* appPath = reinterpret_cast<char*>(EM_ASM_INT({
+//         if ((typeof process === "undefined") || (process.release.name !== "node")) {
+//             return 0;
+//         }
 
-        var lengthBytes = lengthBytesUTF8(__filename)+1;
-        var pathOnWasmHeap = _malloc(lengthBytes);
-        stringToUTF8(__filename, pathOnWasmHeap, lengthBytes);
-        return pathOnWasmHeap;
-    }));
-    if (appPath == nullptr) {
-        return io_result_mk_error("no Lean executable file exists in WASM outside of Node.js");
-    }
+//         var lengthBytes = lengthBytesUTF8(__filename)+1;
+//         var pathOnWasmHeap = _malloc(lengthBytes);
+//         stringToUTF8(__filename, pathOnWasmHeap, lengthBytes);
+//         return pathOnWasmHeap;
+//     }));
+//     if (appPath == nullptr) {
+//         return io_result_mk_error("no Lean executable file exists in WASM outside of Node.js");
+//     }
 
-    object * appPathLean = mk_string(appPath);
-    free(appPath);
-    return io_result_mk_ok(appPathLean);
-#else
-    // Linux version
-    char path[PATH_MAX];
-    char dest[PATH_MAX];
-    memset(dest, 0, PATH_MAX);
-    pid_t pid = getpid();
-    snprintf(path, PATH_MAX, "/proc/%d/exe", pid);
-    if (readlink(path, dest, PATH_MAX) == -1) {
-        return io_result_mk_error("failed to locate application");
-    } else {
-        return io_result_mk_ok(mk_string(dest));
-    }
-#endif
-}
+//     object * appPathLean = mk_string(appPath);
+//     free(appPath);
+//     return io_result_mk_ok(appPathLean);
+// #else
+//     // Linux version
+//     char path[PATH_MAX];
+//     char dest[PATH_MAX];
+//     memset(dest, 0, PATH_MAX);
+//     pid_t pid = getpid();
+//     snprintf(path, PATH_MAX, "/proc/%d/exe", pid);
+//     if (readlink(path, dest, PATH_MAX) == -1) {
+//         return io_result_mk_error("failed to locate application");
+//     } else {
+//         return io_result_mk_ok(mk_string(dest));
+//     }
+// #endif
+// }
 
-extern "C" LEAN_EXPORT obj_res lean_io_current_dir(obj_arg) {
-    char buffer[PATH_MAX];
-    char * cwd = getcwd(buffer, sizeof(buffer));
-    if (cwd) {
-        return io_result_mk_ok(mk_string(cwd));
-    } else {
-        return io_result_mk_error("failed to retrieve current working directory");
-    }
-}
+// extern "C" LEAN_EXPORT obj_res lean_io_current_dir(obj_arg) {
+//     char buffer[PATH_MAX];
+//     char * cwd = getcwd(buffer, sizeof(buffer));
+//     if (cwd) {
+//         return io_result_mk_ok(mk_string(cwd));
+//     } else {
+//         return io_result_mk_error("failed to retrieve current working directory");
+//     }
+// }
 
 // =======================================
 // ST ref primitives

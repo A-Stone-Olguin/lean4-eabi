@@ -14,7 +14,7 @@ Author: Leonardo de Moura
 #include "runtime/compact.h"
 
 #ifndef LEAN_WINDOWS
-#include <sys/mman.h>
+// #include <sys/mman.h>
 #endif
 
 #define LEAN_COMPACTOR_INIT_SZ 1024*1024
