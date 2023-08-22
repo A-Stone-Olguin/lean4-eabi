@@ -153,11 +153,11 @@ extern "C" LEAN_EXPORT size_t lean_object_byte_size(lean_object * o) {
 }
 
 static inline void lean_dealloc(lean_object * o, size_t sz) {
-#ifdef LEAN_SMALL_ALLOCATOR
-    dealloc(o, sz);
-#else
+// #ifdef LEAN_SMALL_ALLOCATOR
+//     dealloc(o, sz);
+// #else
     free(o);
-#endif
+// #endif
 }
 
 extern "C" LEAN_EXPORT void lean_free_object(lean_object * o) {
@@ -215,7 +215,7 @@ static inline void dec(lean_object * o, lean_object* & todo) {
         push_back(todo, o);
     } else if (o->m_rc == 0) {
         return;
-    } else if (std::atomic_fetch_add_explicit(lean_get_rc_mt_addr(o), 1, std::memory_order_acq_rel) == -1) {
+    } else {//if (std::atomic_fetch_add_explicit(lean_get_rc_mt_addr(o), 1, std::memory_order_acq_rel) == -1) {
         push_back(todo, o);
     }
 }
@@ -233,13 +233,13 @@ extern "C" LEAN_EXPORT lean_object * lean_alloc_object(size_t sz) {
          lean_del_core(o, g_to_free);
      }
 #endif
-#ifdef LEAN_SMALL_ALLOCATOR
-    return (lean_object*)alloc(sz);
-#else
+// #ifdef LEAN_SMALL_ALLOCATOR
+//     return (lean_object*)alloc(sz);
+// #else
     void * r = malloc(sz);
     if (r == nullptr) lean_internal_panic_out_of_memory();
     return (lean_object*)r;
-#endif
+// #endif
 }
 
 static void deactivate_task(lean_task_object * t);
@@ -300,7 +300,7 @@ static void lean_del_core(object * o, object * & todo) {
 }
 
 extern "C" LEAN_EXPORT void lean_dec_ref_cold(lean_object * o) {
-    if (o->m_rc == 1 || std::atomic_fetch_add_explicit(lean_get_rc_mt_addr(o), 1, std::memory_order_acq_rel) == -1) {
+    if (o->m_rc == 1) { // || std::atomic_fetch_add_explicit(lean_get_rc_mt_addr(o), 1, std::memory_order_acq_rel) == -1) {
 #ifdef LEAN_LAZY_RC
         push_back(g_to_free, o);
 #else

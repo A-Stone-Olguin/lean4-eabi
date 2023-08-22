@@ -468,14 +468,14 @@ LEAN_THREAD_VALUE(uint64_t, g_heartbeat, 0);
 #endif
 
 /* Helper function for increasing hearbeat even when LEAN_SMALL_ALLOCATOR is not defined */
-extern "C" LEAN_EXPORT void lean_inc_heartbeat() {
-#ifdef LEAN_SMALL_ALLOCATOR
-    if (g_heap)
-        g_heap->m_heartbeat++;
-#else
-    g_heartbeat++;
-#endif
-}
+// extern "C" LEAN_EXPORT void lean_inc_heartbeat() {
+// #ifdef LEAN_SMALL_ALLOCATOR
+//     if (g_heap)
+//         g_heap->m_heartbeat++;
+// #else
+//     g_heartbeat++;
+// #endif
+// }
 
 uint64_t get_num_heartbeats() {
 #ifdef LEAN_SMALL_ALLOCATOR

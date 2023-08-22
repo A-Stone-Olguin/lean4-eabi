@@ -926,20 +926,20 @@ extern "C" LEAN_EXPORT obj_res lean_io_exit(uint8_t code, obj_arg /* w */) {
 }
 
 void initialize_io() {
-    g_io_error_nullptr_read = lean_mk_io_user_error(mk_string("null reference read"));
-    mark_persistent(g_io_error_nullptr_read);
+    // g_io_error_nullptr_read = lean_mk_io_user_error(mk_string("null reference read"));
+    // mark_persistent(g_io_error_nullptr_read);
     g_io_handle_external_class = lean_register_external_class(io_handle_finalizer, io_handle_foreach);
 #if defined(LEAN_WINDOWS)
     _setmode(_fileno(stdout), _O_BINARY);
     _setmode(_fileno(stderr), _O_BINARY);
     _setmode(_fileno(stdin), _O_BINARY);
 #endif
-    g_stream_stdout = lean_stream_of_handle(io_wrap_handle(stdout));
-    mark_persistent(g_stream_stdout);
-    g_stream_stderr = lean_stream_of_handle(io_wrap_handle(stderr));
-    mark_persistent(g_stream_stderr);
-    g_stream_stdin  = lean_stream_of_handle(io_wrap_handle(stdin));
-    mark_persistent(g_stream_stdin);
+    // g_stream_stdout = lean_stream_of_handle(io_wrap_handle(stdout));
+    // mark_persistent(g_stream_stdout);
+    // g_stream_stderr = lean_stream_of_handle(io_wrap_handle(stderr));
+    // mark_persistent(g_stream_stderr);
+    // g_stream_stdin  = lean_stream_of_handle(io_wrap_handle(stdin));
+    // mark_persistent(g_stream_stdin);
 #if !defined(LEAN_WINDOWS) && !defined(LEAN_EMSCRIPTEN)
     // We want to handle SIGPIPE ourselves
     lean_always_assert(signal(SIGPIPE, SIG_IGN) != SIG_ERR);

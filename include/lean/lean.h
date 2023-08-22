@@ -324,9 +324,9 @@ static inline lean_object * lean_alloc_small_object(unsigned sz) {
     sz = lean_align(sz, LEAN_OBJECT_SIZE_DELTA);
     unsigned slot_idx = lean_get_slot_idx(sz);
     assert(sz <= LEAN_MAX_SMALL_OBJECT_SIZE);
-    return (lean_object*)lean_alloc_small(sz, slot_idx);
+    return (lean_object*)lean_alloc_small(sz, slot_idx); // false
 #else
-    lean_inc_heartbeat();
+    // lean_inc_heartbeat();
     void * mem = malloc(sizeof(size_t) + sz);
     if (mem == 0) lean_internal_panic_out_of_memory();
     *(size_t*)mem = sz;
@@ -360,11 +360,11 @@ static inline lean_object * lean_alloc_ctor_memory(unsigned sz) {
 }
 
 static inline unsigned lean_small_object_size(lean_object * o) {
-#ifdef LEAN_SMALL_ALLOCATOR
-    return lean_small_mem_size(o);
-#else
+// #ifdef LEAN_SMALL_ALLOCATOR
+//     return lean_small_mem_size(o);
+// #else
     return *((size_t*)o - 1);
-#endif
+// #endif
 }
 
 #ifndef __cplusplus
@@ -372,11 +372,11 @@ void free(void *);  // avoid including big `stdlib.h`
 #endif
 
 static inline void lean_free_small_object(lean_object * o) {
-#ifdef LEAN_SMALL_ALLOCATOR
-    lean_free_small(o);
-#else
+// #ifdef LEAN_SMALL_ALLOCATOR
+//     lean_free_small(o);
+// #else
     free((size_t*)o - 1);
-#endif
+// #endif
 }
 
 LEAN_SHARED lean_object * lean_alloc_object(size_t sz);

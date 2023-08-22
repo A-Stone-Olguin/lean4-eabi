@@ -274,17 +274,17 @@ LEAN_THREAD_PTR(thread_finalizers, g_post_finalizers);
 
 void delete_thread_finalizer_manager() {}
 
-void register_thread_finalizer(thread_finalizer fn, void * p) {
-    if (!g_finalizers)
-        g_finalizers = new thread_finalizers();
-    g_finalizers->emplace_back(fn, p);
-}
+// void register_thread_finalizer(thread_finalizer fn, void * p) {
+//     if (!g_finalizers)
+//         g_finalizers = new thread_finalizers();
+//     g_finalizers->emplace_back(fn, p);
+// }
 
-void register_post_thread_finalizer(thread_finalizer fn, void * p) {
-    if (!g_post_finalizers)
-        g_post_finalizers = new thread_finalizers();
-    g_post_finalizers->emplace_back(fn, p);
-}
+// void register_post_thread_finalizer(thread_finalizer fn, void * p) {
+//     if (!g_post_finalizers)
+//         g_post_finalizers = new thread_finalizers();
+//     g_post_finalizers->emplace_back(fn, p);
+// }
 
 void run_thread_finalizers(thread_finalizers * fns) {
     if (fns) {
