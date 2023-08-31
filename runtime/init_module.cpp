@@ -6,10 +6,10 @@ Author: Leonardo de Moura
 */
 #include "runtime/alloc.h"
 #include "runtime/debug.h"
-#include "runtime/thread.h"
+// #include "runtime/thread.h"
 #include "runtime/object.h"
 #include "runtime/io.h"
-#include "runtime/stack_overflow.h"
+// #include "runtime/stack_overflow.h"
 #include "runtime/process.h"
 #include "runtime/mutex.h"
 
@@ -19,7 +19,7 @@ extern "C" LEAN_EXPORT void lean_initialize_runtime_module() {
     initialize_debug();
     initialize_object();
     initialize_io();
-    initialize_thread();
+    // initialize_thread();
     initialize_mutex();
     initialize_process();
     // initialize_stack_overflow();
@@ -31,7 +31,7 @@ void finalize_runtime_module() {
     // finalize_stack_overflow();
     finalize_process();
     finalize_mutex();
-    finalize_thread();
+    // finalize_thread();
     finalize_io();
     finalize_object();
     finalize_debug();

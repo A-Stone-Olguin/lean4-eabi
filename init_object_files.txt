@@ -15,7 +15,6 @@
 ./library/compiler/csimp.o
 ./library/compiler/struct_cases_on.o
 ./library/compiler/specialize.o
-./library/compiler/ir_interpreter.o
 ./library/compiler/borrowed_annotation.o
 ./library/compiler/llvm.o
 ./library/compiler/init_attribute.o
@@ -53,7 +52,6 @@
 ./library/init_module.o
 ./library/util.o
 ./initialize/init.o
-./util/shell.o
 ./util/option_declarations.o
 ./util/ffi.o
 ./util/name_set.o
@@ -65,13 +63,11 @@
 ./util/options.o
 ./util/name.o
 ./util/name_generator.o
-./util/path.o
 ./util/list_fn.o
 ./util/lbool.o
 ./util/map_foreach.o
 ./util/bit_tricks.o
 ./util/init_module.o
-./shell/lean_js.o
 ./shell/lean.o
 ./kernel/replace_fn.o
 ./kernel/environment.o

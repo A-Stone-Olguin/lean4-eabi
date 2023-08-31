@@ -20,7 +20,7 @@ Author: Leonardo de Moura
 #include "library/projection.h"
 #include "library/replace_visitor.h"
 #include "library/num.h"
-#include "githash.h" // NOLINT
+// #include "githash.h" // NOLINT
 
 namespace lean {
 name mk_unused_name(environment const & env, name const & n, unsigned & idx) {
@@ -870,16 +870,16 @@ void initialize_library_util() {
 
     out << LEAN_VERSION_MAJOR << "."
         << LEAN_VERSION_MINOR << "." << LEAN_VERSION_PATCH;
-    if (std::strlen(LEAN_SPECIAL_VERSION_DESC) > 0) {
-        out << "-" << LEAN_SPECIAL_VERSION_DESC;
-    }
-    if (std::strlen(LEAN_GITHASH) == 0) {
-        if (std::strcmp(LEAN_PACKAGE_VERSION, "NOT-FOUND") != 0) {
-            out << ", package " << LEAN_PACKAGE_VERSION;
-        }
-    } else {
-        out << ", commit " << std::string(LEAN_GITHASH).substr(0, 12);
-    }
+    // if (std::strlen(LEAN_SPECIAL_VERSION_DESC) > 0) {
+    //     out << "-" << LEAN_SPECIAL_VERSION_DESC;
+    // }
+    // if (std::strlen(LEAN_GITHASH) == 0) {
+    //     if (std::strcmp(LEAN_PACKAGE_VERSION, "NOT-FOUND") != 0) {
+    //         out << ", package " << LEAN_PACKAGE_VERSION;
+    //     }
+    // } else {
+    //     out << ", commit " << std::string(LEAN_GITHASH).substr(0, 12);
+    // }
     g_version_string = new std::string(out.str());
 
     g_util_fresh = new name("_util_fresh");

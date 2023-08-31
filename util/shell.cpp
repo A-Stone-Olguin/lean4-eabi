@@ -49,12 +49,12 @@ Author: Leonardo de Moura
 #if defined(LEAN_EMSCRIPTEN)
 #include <emscripten.h>
 #endif
-#include "githash.h" // NOLINT
+// #include "githash.h" // NOLINT
 
 #ifdef LEAN_WINDOWS
 #include <windows.h>
 #else
-#include <dlfcn.h>
+// #include <dlfcn.h>
 #endif
 
 #ifdef _MSC_VER

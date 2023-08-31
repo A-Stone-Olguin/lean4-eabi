@@ -15,7 +15,6 @@
 ./library/compiler/csimp.cpp
 ./library/compiler/struct_cases_on.cpp
 ./library/compiler/specialize.cpp
-./library/compiler/ir_interpreter.cpp
 ./library/compiler/borrowed_annotation.cpp
 ./library/compiler/llvm.cpp
 ./library/compiler/init_attribute.cpp
@@ -53,7 +52,6 @@
 ./library/init_module.cpp
 ./library/util.cpp
 ./initialize/init.cpp
-./util/shell.cpp
 ./util/option_declarations.cpp
 ./util/ffi.cpp
 ./util/name_set.cpp
@@ -65,13 +63,11 @@
 ./util/options.cpp
 ./util/name.cpp
 ./util/name_generator.cpp
-./util/path.cpp
 ./util/list_fn.cpp
 ./util/lbool.cpp
 ./util/map_foreach.cpp
 ./util/bit_tricks.cpp
 ./util/init_module.cpp
-./shell/lean_js.cpp
 ./shell/lean.cpp
 ./kernel/replace_fn.cpp
 ./kernel/environment.cpp
